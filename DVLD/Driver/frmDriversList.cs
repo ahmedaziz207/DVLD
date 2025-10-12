@@ -13,6 +13,7 @@ namespace DVLD
 {
     public partial class frmDriversList : Form
     {
+        private static DataTable dtAllDrivers;
         public frmDriversList()
         {
             InitializeComponent();
@@ -34,8 +35,8 @@ namespace DVLD
         }
         private void _RefreshDriversList()
         {
-            dataGridView1.DataSource = clsDriver.GetDrivers().DefaultView;
-            clsDriver.GetDrivers().DefaultView.Sort = "[Driver ID] DESC";
+            dtAllDrivers = clsDriver.GetDrivers();
+            dataGridView1.DataSource = dtAllDrivers;
             dataGridView1.Columns[0].FillWeight = 70;
             dataGridView1.Columns[1].FillWeight = 70;
             dataGridView1.Columns[2].FillWeight = 70;
@@ -57,29 +58,22 @@ namespace DVLD
 
         private void FilterRecordsInDataGridView()
         {
-            DataView dv = clsDriver.GetDrivers().DefaultView;
+            string FilterColumn = cbFilter.SelectedItem.ToString();
+            string FilterValue = txtFilter.Text;
 
-            string columnName = cbFilter.SelectedItem.ToString();
-            string filterValue = txtFilter.Text;
-
-            if (string.IsNullOrWhiteSpace(filterValue))
+            if (txtFilter.Text.Trim() == "" || FilterColumn == "None")
             {
-                dv.RowFilter = "";
+                dtAllDrivers.DefaultView.RowFilter = "";
+                lblRecords.Text = dataGridView1.Rows.Count.ToString();
+                return;
             }
+
+            if (FilterColumn == "National No" || FilterColumn == "Full Name")
+                dtAllDrivers.DefaultView.RowFilter = $"[{FilterColumn}] LIKE '{FilterValue}%'";
             else
-            {
+                dtAllDrivers.DefaultView.RowFilter = $"[{FilterColumn}] = {FilterValue}";
 
-                if (columnName == "National No" || columnName == "Full Name")
-                {
-                    dv.RowFilter = $"[{columnName}] LIKE '{filterValue}%'";
-                }
-                else
-                {
-                    dv.RowFilter = $"[{columnName}] = {filterValue}";
-                }
-            }
-
-            dataGridView1.DataSource = dv;
+            lblRecords.Text = dataGridView1.Rows.Count.ToString();
 
         }
         private void txtFilter_TextChanged(object sender, EventArgs e)
@@ -116,6 +110,7 @@ namespace DVLD
             int PersonID = (int)dataGridView1.CurrentRow.Cells[1].Value;
             frmPersonLicenseHistory frm = new frmPersonLicenseHistory(clsPerson.GetPersonByID(PersonID));
             frm.ShowDialog();
+            frmDriversList_Load(null,null);
         }
     }
 }
