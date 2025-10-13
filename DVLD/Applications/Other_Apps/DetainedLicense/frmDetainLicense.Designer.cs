@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmDetainLicense));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtFineFees = new System.Windows.Forms.TextBox();
             this.lblCreatedBy = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -45,8 +47,9 @@
             this.linkLHistory = new System.Windows.Forms.LinkLabel();
             this.btnDetain = new System.Windows.Forms.Button();
             this.btnClose = new System.Windows.Forms.Button();
-            this.txtFineFees = new System.Windows.Forms.TextBox();
+            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -68,6 +71,16 @@
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Detain Info";
+            // 
+            // txtFineFees
+            // 
+            this.txtFineFees.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFineFees.Location = new System.Drawing.Point(311, 117);
+            this.txtFineFees.Name = "txtFineFees";
+            this.txtFineFees.Size = new System.Drawing.Size(160, 30);
+            this.txtFineFees.TabIndex = 51;
+            this.txtFineFees.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFineFees_KeyPress);
+            this.txtFineFees.Validating += new System.ComponentModel.CancelEventHandler(this.txtFineFees_Validating);
             // 
             // lblCreatedBy
             // 
@@ -237,14 +250,9 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // txtFineFees
+            // errorProvider1
             // 
-            this.txtFineFees.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtFineFees.Location = new System.Drawing.Point(311, 117);
-            this.txtFineFees.Name = "txtFineFees";
-            this.txtFineFees.Size = new System.Drawing.Size(160, 30);
-            this.txtFineFees.TabIndex = 51;
-            this.txtFineFees.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFineFees_KeyPress);
+            this.errorProvider1.ContainerControl = this;
             // 
             // frmDetainLicense
             // 
@@ -266,6 +274,7 @@
             this.Load += new System.EventHandler(this.frmDetainLicense_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -290,5 +299,6 @@
         private System.Windows.Forms.Button btnDetain;
         private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.TextBox txtFineFees;
+        private System.Windows.Forms.ErrorProvider errorProvider1;
     }
 }

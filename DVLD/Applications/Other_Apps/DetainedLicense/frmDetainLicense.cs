@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace DVLD
 {
@@ -41,6 +42,13 @@ namespace DVLD
         }
         private void btnDetain_Click(object sender, EventArgs e)
         {
+            if (!this.ValidateChildren())
+            {
+                MessageBox.Show("Some fileds are not valide!, put the mouse over the red icon(s) to see the error", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
             if (MessageBox.Show("Are you sure you want to Detain the License?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 SaveDetaindLicense();
@@ -74,12 +82,14 @@ namespace DVLD
             clsPerson person = clsPerson.GetPersonByID(clsApplication.GetApplication(License.ApplicationID).ApplicantPersonID);
             frmPersonLicenseHistory frm = new frmPersonLicenseHistory(person);
             frm.ShowDialog();
+            frmDetainLicense_Load(null, null);
         }
 
         private void linkLincenseInfo_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             frmShowLicenseinfo frm = new frmShowLicenseinfo(License);
             frm.ShowDialog();
+            frmDetainLicense_Load(null,null);
         }
 
         private void cntlDriverLicenseWithFilter1_OnLicenseSelected(int obj)
@@ -111,6 +121,7 @@ namespace DVLD
                 {
                     cntlDriverLicenseWithFilter1.LoadDriverData();
                     lblLicenseId.Text = License.LicenseID.ToString();
+                    txtFineFees.Focus();
                     btnDetain.Enabled = true;
                     linkLHistory.Enabled = true;
                     linkLincenseInfo.Enabled = false;
@@ -127,5 +138,18 @@ namespace DVLD
             }
         }
 
+        private void txtFineFees_Validating(object sender, CancelEventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(txtFineFees.Text))
+            {
+                e.Cancel = true;
+                errorProvider1.SetError(txtFineFees, "This field is required!");
+            }
+            else
+            {
+                e.Cancel = false;
+                errorProvider1.SetError(txtFineFees, null);
+            }
+        }
     }
 }
