@@ -1,4 +1,5 @@
-﻿using DVLD_Business;
+﻿using Microsoft.Win32;
+using DVLD_Business;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,8 @@ namespace DVLD
     {
         clsUser user; //To Reduce Memory Consuming
         byte Trials = 3;
+
+        static string keyPath = @"SOFTWARE\DVLD";
         public frmLogin()
         {
             InitializeComponent();
@@ -80,31 +83,56 @@ namespace DVLD
 
         private void frmLogin_Load(object sender, EventArgs e)
         {
-            txtUserName.Text = Properties.Settings.Default.UserName;
-            txtPassword.Text = Properties.Settings.Default.Password;
 
-            if(string.IsNullOrWhiteSpace(txtUserName.Text))
-                chkRememberMe.Checked = false;
-            else
+            using (RegistryKey key = Registry.CurrentUser.OpenSubKey(keyPath))
+            {
+                txtUserName.Text = key?.GetValue("Username")?.ToString() ?? string.Empty;
+                txtPassword.Text = key?.GetValue("Password")?.ToString() ?? string.Empty;
+            }
+
+            if (!string.IsNullOrEmpty(txtUserName.Text) && !string.IsNullOrEmpty(txtPassword.Text))
+            {
                 chkRememberMe.Checked = true;
+            }
+            else
+            {
+                chkRememberMe.Checked = false;
+            }
+
         }
 
         private void RememberMe()
         {
-            if (chkRememberMe.Checked)
+            if(!chkRememberMe.Checked)
             {
-                Properties.Settings.Default.UserName = txtUserName.Text;
-                Properties.Settings.Default.Password = txtPassword.Text;
+                try
+                {
+                    using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
+                    {
+                        key.DeleteValue("Username", false);
+                        key.DeleteValue("Password", false);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Failed to delete registry value. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
 
+                return;
             }
-            else
+
+            try
             {
-                Properties.Settings.Default.UserName = null;
-                Properties.Settings.Default.Password = null;
-
+                using (RegistryKey key = Registry.CurrentUser.CreateSubKey(keyPath))
+                {
+                    key.SetValue("Username", txtUserName.Text.Trim(), RegistryValueKind.String);
+                    key.SetValue("Password", txtPassword.Text.Trim(), RegistryValueKind.String);
+                }
             }
-            
-            Properties.Settings.Default.Save();
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to set registry value. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
         }
     }
