@@ -78,8 +78,8 @@ namespace DVLD
             //the following code will not be executed if the person was not found
             lblUserID.Text = _user.UserID.ToString();
             txtUserName.Text = _user.UserName;
-            txtPassword.Text = _user.Password;
-            txtConfirmpassword.Text = _user.Password;
+            txtPassword.Text = "";
+            txtConfirmpassword.Text = "";
             chkIsActive.Checked = _user.IsActive;
             cntlPersonCardWithFilter1.LoadPersonInfo(_user.PersonID);
         }

@@ -15,10 +15,10 @@ namespace DVLD
     public partial class frmChangePassword : Form
     {
         private clsUser _user;
-        public frmChangePassword(clsUser user)
+        public frmChangePassword(int UserID)
         {
             InitializeComponent();
-            _user = user;
+            _user = clsUser.GetUserByID(UserID);
         }
 
         private void frmChangePassword_Load(object sender, EventArgs e)
@@ -41,7 +41,7 @@ namespace DVLD
                 errorProvider1.SetError(txtCurrentPassword, "");
             }
 
-            if (txtCurrentPassword.Text != _user.Password)
+            if (clsHash.ComputeHash(txtCurrentPassword.Text) != _user.Password)
             {
                 e.Cancel = true;
                 txtCurrentPassword.Focus();
@@ -114,6 +114,7 @@ namespace DVLD
             {
                 MessageBox.Show($"Failed to Save User.", " Failed", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+            this.Close();
         }
 
         private void btnClose_Click(object sender, EventArgs e)

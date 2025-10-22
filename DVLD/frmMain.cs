@@ -45,7 +45,7 @@ namespace DVLD
 
         private void changePasswordToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            frmChangePassword frm = new frmChangePassword(_user);
+            frmChangePassword frm = new frmChangePassword(clsSettings.UserID);
             frm.ShowDialog();
         }
 

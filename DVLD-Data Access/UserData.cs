@@ -95,7 +95,8 @@ namespace DVLD_Data_Access
 
             SqlConnection connection = new SqlConnection(clsDataAccessSettings.ConnectionString);
 
-            string query = "SELECT * FROM Users WHERE Username = @Username and Password=@Password;";
+            string query = @"SELECT * FROM Users WHERE Username = @Username COLLATE Latin1_General_CS_AS
+                             and Password=@Password COLLATE Latin1_General_CS_AS";
 
             SqlCommand command = new SqlCommand(query, connection);
 

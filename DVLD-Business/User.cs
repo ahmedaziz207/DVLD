@@ -23,13 +23,13 @@ namespace DVLD_Business
 
         private bool _AddNewUser()
         {
-            this.UserID = clsUserDataAccess.AddNewUser(this.PersonID, this.UserName, this.Password, this.IsActive);
+            this.UserID = clsUserDataAccess.AddNewUser(this.PersonID,this.UserName, clsHash.ComputeHash(this.Password), this.IsActive);
             return (this.UserID != -1);
         }
 
         private bool _UpdateUser()
         {
-            return clsUserDataAccess.UpdateUser(this.UserID, this.PersonID, this.UserName, this.Password, this.IsActive);
+            return clsUserDataAccess.UpdateUser(this.UserID, this.PersonID, this.UserName, clsHash.ComputeHash(this.Password), this.IsActive);
         }
 
         public clsUser()
@@ -95,6 +95,7 @@ namespace DVLD_Business
 
             bool IsActive = false;
 
+            Password = clsHash.ComputeHash(Password);
             bool IsFound = clsUserDataAccess.GetUserInfoByUsernameAndPassword
                                 (UserName, Password, ref UserID, ref PersonID, ref IsActive);
 

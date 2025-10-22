@@ -188,7 +188,7 @@ namespace DVLD
 
         private void changePasswordtoolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            frmChangePassword frm = new frmChangePassword(clsUser.GetUserByID((int)dataGridView1.CurrentRow.Cells[0].Value));
+            frmChangePassword frm = new frmChangePassword((int)dataGridView1.CurrentRow.Cells[0].Value);
             frm.ShowDialog();
             _RefreshUsersList();
             cbFilter.SelectedIndex = 0;
