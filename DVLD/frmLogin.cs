@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System.Diagnostics;
+using Microsoft.Win32;
 using DVLD_Business;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace DVLD
 
                     RememberMe();
                     this.Hide();
+                    LogInfoToEventViewer("User \"" + user.UserName + "\" logged in successfully.", EventLogEntryType.Information);
                     frmMain frm = new frmMain();
                     frm.ShowDialog();
                     this.Close();
@@ -68,6 +70,7 @@ namespace DVLD
                     case 1:
                         Trials--;
                         lblTrials.Text = "No Trials Left !";
+                        LogInfoToEventViewer("User has exceeded maximum (3) login Trials.", EventLogEntryType.Error);
                         txtUserName.Enabled = false;
                         txtPassword.Enabled = false;
                         btnLogin.Enabled = false;
@@ -134,6 +137,20 @@ namespace DVLD
                 MessageBox.Show("Failed to set registry value. " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        }
+        private void LogInfoToEventViewer(string message, EventLogEntryType type)
+        {
+            string source = "DVLD_App";
+            string log = "Application";
+            if (!EventLog.SourceExists(source))
+            {
+                EventLog.CreateEventSource(source, log);
+            }
+            using (EventLog eventLog = new EventLog(log))
+            {
+                eventLog.Source = source;
+                eventLog.WriteEntry(message, type);
+            }
         }
     }
 }
